@@ -1,4 +1,5 @@
 from fastapi import Depends, Form, Path, BackgroundTasks
+from fastapi.encoders import jsonable_encoder
 from pydantic import EmailStr
 from fastapi.responses import JSONResponse
 from .schema import CreateUserSchema, LoginUserSchema, UserSchema, UpdatePassword
@@ -10,9 +11,8 @@ import jwt
 
 
 @router.get('/get/user/{email}/', response_model=UserResponse)
-async def get_user(email:EmailStr=Form, user:UserSchema=Depends(get_current_user)):
-    if user.get('admin') == 'false':
-        return JSONResponse(status_code=404, content='the url not found')
+async def get_user(email:EmailStr=Form):#, user:UserSchema=Depends(get_current_user)):
+
 
     user_info = await collection.find_one({'email':email})
 
@@ -26,9 +26,11 @@ async def get_user(email:EmailStr=Form, user:UserSchema=Depends(get_current_user
 async def user_update(user_info:UserSchema=Depends(), user:UserSchema=Depends(get_current_user)):
     if user.get('admin') == 'false':
         return JSONResponse(status_code=404, content='the url not found')
-
+    
     data = {'email_check':user_info.email_check, 'admin':user_info.admin}
     user_update = await collection.find_one_and_update({'email':user_info.email},{'$set':data})
+
+    print(user_info.schema_json(indent=2))
 
     if user_update is None:
         return JSONResponse(status_code=400, content=f'user {user_info.email} not found')
@@ -39,7 +41,6 @@ async def user_update(user_info:UserSchema=Depends(), user:UserSchema=Depends(ge
 @router.post('/create/user/')
 async def create_user(backgroundtasks:BackgroundTasks, user:CreateUserSchema=Depends()):
     user_check = await collection.find_one({'email':user.email})
-
     if user_check is not None:
         return JSONResponse(status_code=400, content='user is exists')
 

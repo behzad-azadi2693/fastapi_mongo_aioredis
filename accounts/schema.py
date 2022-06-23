@@ -34,3 +34,12 @@ class UserSchema(BaseModel):
     email:str
     email_check:str
     admin:str
+
+    class Config:
+        schema_extra = {
+            "User_example": {
+                "email": "admin@gmail.com",
+                "email_check": "false",
+                "admin": "false",
+            }
+        }

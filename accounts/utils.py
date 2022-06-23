@@ -35,7 +35,7 @@ async def get_current_user(token: UserSchema=Depends(oauth2_schema)):
 
 
 def sending_token(email_auth):
-    data = {"email_auth":email_auth, "exp": datetime.now() + timedelta(hours=5)}
+    data = {"email_auth":email_auth, "exp": datetime.now() + timedelta(minutes = 10)}
     token = jwt.encode( data, SECRET_KEY, algorithm='HS256')
 
     '''
@@ -59,3 +59,5 @@ def check_time(time):
         return False
     
     return True
+
+
