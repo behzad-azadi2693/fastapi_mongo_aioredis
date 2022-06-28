@@ -1,0 +1,5 @@
+venv/
+*/versions/
+__pycache__/
+**/media/
+data/
