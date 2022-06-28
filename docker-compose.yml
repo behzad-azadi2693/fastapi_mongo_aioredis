@@ -12,7 +12,26 @@ services:
     volumes:
       - mongo:/data/db
 
+  redis:
+      image: redis
+      container_name: redis
+      command: redis-server --requirepass ${REDIS_PASSWORD}
+      ports: 
+          - "6379:6379"
+      networks: 
+          - main
+      restart: on-failure
+      volumes:
+          - redisdata:/data
+
+
+networks: 
+    main:  
+        external: false
 
 volumes:
   mongo:
     external: false
+
+  redisdata:
+      external: false

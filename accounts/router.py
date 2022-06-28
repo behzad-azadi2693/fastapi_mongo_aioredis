@@ -11,8 +11,9 @@ import jwt
 
 
 @router.get('/get/user/{email}/', response_model=UserResponse)
-async def get_user(email:EmailStr=Form):#, user:UserSchema=Depends(get_current_user)):
-
+async def get_user(email:EmailStr=Form, user:UserSchema=Depends(get_current_user)):
+    if user.get('admin') == 'false':
+        return JSONResponse(status_code=404, content='the url not found')
 
     user_info = await collection.find_one({'email':email})
 

@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 from fastapi_mail import ConnectionConfig
+import aioredis
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +19,9 @@ connection = motor.motor_asyncio.AsyncIOMotorClient(engine)
 
 db = connection[os.getenv('DB_NAME')]
 
-
+redis = aioredis.from_url(
+        os.getenv('REDIS_ENGINE'), db=1,password=os.getenv('REDIS_PASSWORD'), decode_responses=True
+    )
 
 email_conf =''' ConnectionConfig(
         MAIL_USERNAME = os.getenv('MAIL_USERNAME'),
