@@ -32,7 +32,7 @@ services:
                       alembic upgrade head &&
                       uvicorn config.main:app --reload --host 0.0.0.0 "
       depends_on: 
-          - postgres
+          - mongodb
       expose: 
           - "8000"
       networks:
